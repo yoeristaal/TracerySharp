@@ -4,12 +4,14 @@ using Tracery;
 [System.Serializable]
 public class TraceryGrammar : MonoBehaviour
 {
-	public Symbol[] symbols;
+	public TraceryGrammarAsset grammarAsset;
+	public Symbol[] symbols = new Symbol[0];
 
 	public Grammar Grammar
 	{
 		get
 		{
+			if (grammarAsset != null) return grammarAsset.CreateGrammar();
 			Grammar grammar = new Grammar();
 			foreach (Symbol s in symbols)
 			{

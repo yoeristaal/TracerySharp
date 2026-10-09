@@ -1,6 +1,6 @@
 {
   "name": "com.yoeristaal.tracerysharp",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "displayName": "TracerySharp",
   "description": "A C# port of Tracery for procedural text generation in Unity.",
   "documentationUrl": "https://github.com/yoeristaal/TracerySharp#readme",

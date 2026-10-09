@@ -39,7 +39,38 @@ GameObject go = GameObject.Find("foo"); // the GameObject to which you attached 
 Grammar grammar = go.GetComponent<TraceryGrammar>().Grammar;
 ```
 
-#### Method 2: Load from JSON
+#### Method 2: Use a shared grammar asset
+
+Choose **Assets > Create > Tracery > Grammar** to create a `TraceryGrammarAsset`. In its Inspector, add symbols and alternative rules. Validation errors appear as you edit. Set the preview's start rule (default `#origin#`) and click **Generate Preview** to generate text.
+
+Assign the asset to the **Grammar Asset** field on a `TraceryGrammar` component, or reference it directly from your own scripts:
+
+```C#
+using Tracery;
+using UnityEngine;
+
+public class DialogueGenerator : MonoBehaviour
+{
+    [SerializeField] private TraceryGrammarAsset grammarAsset;
+    private Grammar grammar;
+
+    private void Awake()
+    {
+        grammar = grammarAsset.CreateGrammar();
+    }
+
+    public string Generate()
+    {
+        return grammar.Flatten("#origin#");
+    }
+}
+```
+
+The same asset can be assigned in multiple scenes and prefabs. `CreateGrammar()` makes a fresh grammar each time: pushes, pops, and custom modifiers affect that instance, while the asset stays unchanged. Cache the returned grammar when you want to retain runtime changes. A component's `Grammar` property also returns a fresh instance on each access. When its asset field is empty, the component continues to use its inline rules.
+
+`grammarAsset.Validate()` checks the definitions before parsing, including duplicate names, missing symbols, empty lists, and malformed tags. `CreateGrammar()` rejects invalid serialized entries and malformed syntax, but allows unresolved symbol references so your game can supply them after creation. The Inspector preview requires validation to pass, uses a fresh grammar, preserves the game's global random sequence, and limits preview depth, expansion count, and output length. These limits apply only to previews; normal runtime generation retains its existing behavior.
+
+#### Method 3: Load from JSON
 
 Add the JSON file containing your serialized grammar to the `Assets/Resources` directory within your Unity project. Then you can access it in your scripts as follows:
 
@@ -50,7 +81,7 @@ Grammar grammar = Grammar.LoadFromJSON(jsonFile);
 
 You can also use `Grammar.LoadFromJSON(string jsonString)` to load a grammar directly from a JSON string.
 
-#### Method 3: Write a script
+#### Method 4: Write a script
 
 In a C# script, you can create a `Grammar` object directly using the public constructor. Then you can programmatically populate it with rules using the `PushRules` method:
 
@@ -118,6 +149,8 @@ Tracery.Rng = new System.Random(42); // replace 42 with whatever seed you want
 ## Development checks
 
 Run `pwsh -File Tests~/ValidateGrammar.ps1` to compile the core and run validation regression checks without Unity. The harness substitutes only `UnityEngine.TextAsset`; it does not verify Unity Editor imports or the custom inspector. The `Tests~` folder is excluded from Unity asset imports.
+
+Run `pwsh -File Tests~/ValidateGrammarAsset.ps1` for grammar asset checks, including independent runtime state, asset validation, component integration, and preview limits. It also compiles all package scripts against minimal Unity API stubs. Confirm asset creation, Inspector editing, undo/redo, and persistence in the Unity Editor separately.
 
 ## Credits
 

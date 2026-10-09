@@ -15,6 +15,25 @@ public class GrammarEditor : Editor
 	public override void OnInspectorGUI()
 	{
 		serializedObject.Update();
+		EditorGUILayout.PropertyField(serializedObject.FindProperty("grammarAsset"), new GUIContent("Grammar Asset"));
+		if (serializedObject.ApplyModifiedProperties()) testValue = null;
+		var grammarAsset = ((TraceryGrammar)target).grammarAsset;
+		if (grammarAsset != null)
+		{
+			EditorGUILayout.HelpBox("This component uses the shared grammar asset. Select the asset to edit its rules.", MessageType.Info);
+			var errors = grammarAsset.Validate();
+			foreach (var error in errors) EditorGUILayout.HelpBox(error.ToString(), MessageType.Error);
+			using (new EditorGUI.DisabledGroupScope(errors.Count > 0))
+			{
+				if (GUILayout.Button("Test Grammar"))
+				{
+					try { testValue = grammarAsset.Preview(); }
+					catch (Exception cause) { testValue = cause.Message; }
+				}
+			}
+			if (testValue != null) EditorGUILayout.TextArea(testValue);
+			return;
+		}
 
 		SerializedProperty symbols = serializedObject.FindProperty("symbols");
 
