@@ -49,7 +49,8 @@ using System.Collections.Generic;
 using System.Linq;
 
 
-namespace SimpleJSON
+// Keep the bundled parser separate from SimpleJSON copies in other packages.
+namespace TracerySharp.Vendor.SimpleJSON
 {
 	public enum JSONBinaryTag
 	{

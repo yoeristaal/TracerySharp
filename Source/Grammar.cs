@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using SimpleJSON;
+using TracerySharp.Vendor.SimpleJSON;
 using UnityEngine;
 
 namespace Tracery
