@@ -4,9 +4,21 @@ A (heavily WIP) C# port of [Tracery](http://tracery.io/), a text generation libr
 
 ## Installation
 
-You probably shouldn't use this yet! That said, if you *really* want to, you can "install" TracerySharp today by downloading the `Source` directory from this repository and dropping it directly into your Unity project's `Assets` folder.
+TracerySharp is still a work in progress.
 
-In the future, I'll be looking into cleaner alternative methods of distributing libraries for use in Unity games.
+In Unity, open **Window > Package Manager**, choose **Add package from git URL** from the **+** menu, and enter:
+
+```text
+https://github.com/yoeristaal/TracerySharp.git
+```
+
+The repository root contains the Unity package manifest (`package.json`), so no `?path=` suffix is needed. The manifest and assembly definitions must be committed and pushed to GitHub before installation from this URL will work.
+
+To use a local checkout, choose **Add package from disk** and select its root `package.json`.
+
+If your own scripts use an assembly definition, add `TracerySharp` to its Assembly Definition References. Scripts in Unity's default assemblies can use the package automatically.
+
+Alternatively, download the `Source` directory and place it in your project's `Assets` folder. Use only one installation method to avoid duplicate classes.
 
 ## Usage
 

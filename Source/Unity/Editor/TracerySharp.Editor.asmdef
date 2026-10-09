@@ -1,0 +1,10 @@
+{
+  "name": "TracerySharp.Editor",
+  "references": [
+    "TracerySharp"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "autoReferenced": true
+}
