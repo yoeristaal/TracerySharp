@@ -4,7 +4,7 @@ namespace Tracery
 {
 	public class RuleNode : TraceryNode
 	{
-		private TraceryNode[] sections;
+		internal readonly TraceryNode[] sections;
 
 		public RuleNode(TraceryNode[] sections, string raw) : base(raw)
 		{

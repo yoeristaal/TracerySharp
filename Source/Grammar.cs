@@ -110,6 +110,18 @@ namespace Tracery
 			return stack;
 		}
 
+		/// <summary>Checks active rules without generating text or changing the grammar.</summary>
+		public IReadOnlyList<GrammarValidationError> Validate()
+		{
+			return GrammarValidator.Validate(symbols);
+		}
+
+		/// <summary>Checks raw rules before loading them, including rules that cannot be parsed.</summary>
+		public static IReadOnlyList<GrammarValidationError> ValidateRules(IDictionary<string, string[]> rules)
+		{
+			return GrammarValidator.Validate(rules);
+		}
+
 		private T RandItem<T>(T[] items)
 		{
 			return items[Tracery.Rng.Next(items.Length)];

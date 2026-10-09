@@ -2,7 +2,7 @@
 {
 	public class PopRulesAction : NodeAction
 	{
-		private string key;
+		internal readonly string key;
 
 		public PopRulesAction(string key)
 		{

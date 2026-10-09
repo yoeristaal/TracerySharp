@@ -72,6 +72,41 @@ string expanded = grammar.Flatten("#origin#"); // assuming the grammar has a rul
 
 TracerySharp is still incomplete, but you should be able to use most of the basic syntax described in the [Tracery tutorial](http://www.crystalcodepalace.com/traceryTut.html).
 
+### Validate a grammar
+
+Call `Validate()` before generating text to check every active rule for missing symbols and empty rule lists:
+
+```C#
+foreach (var error in grammar.Validate())
+{
+    Debug.LogError(error.ToString());
+}
+```
+
+To check malformed syntax before loading rules, use `Grammar.ValidateRules`:
+
+```C#
+var rules = new Dictionary<string, string[]>
+{
+    { "origin", new[] { "Hello, #name#!", "#unfinished" } }
+};
+
+var errors = Grammar.ValidateRules(rules);
+if (errors.Count == 0)
+{
+    var grammar = new Grammar();
+    foreach (var pair in rules) grammar.PushRules(pair.Key, pair.Value);
+}
+else
+{
+    foreach (var error in errors) Debug.LogError(error.ToString());
+}
+```
+
+Use `using Tracery;` and `using System.Collections.Generic;` for these examples. Each error exposes `Symbol`, `RuleIndex` (zero-based, or `-1` for a rule-list error), `Rule`, and `Message`. Validation returns all errors it finds without expanding text, consuming randomness, or changing the grammar. An empty string is a valid rule; an empty array is not.
+
+Validation understands escapes and push/POP actions within each rule, including temporary tag pre-actions. It checks each rule against the current grammar independently; symbols supplied only by a caller's actions in another rule may be reported as missing. It does not detect recursion or execute custom nodes and modifiers. Syntax errors during normal loading now throw `FormatException` with the offending rule or tag.
+
 ### Make TracerySharp deterministic
 
 [Much like Tracery itself](https://github.com/galaxykate/tracery/tree/tracery2#making-tracery-deterministic), you can make TracerySharp deterministic by setting `Tracery.Rng` to an instance of `System.Random` [constructed with a specified seed](https://msdn.microsoft.com/en-us/library/ctssatww(v=vs.110).aspx):
@@ -79,6 +114,10 @@ TracerySharp is still incomplete, but you should be able to use most of the basi
 ```C#
 Tracery.Rng = new System.Random(42); // replace 42 with whatever seed you want
 ```
+
+## Development checks
+
+Run `pwsh -File Tests~/ValidateGrammar.ps1` to compile the core and run validation regression checks without Unity. The harness substitutes only `UnityEngine.TextAsset`; it does not verify Unity Editor imports or the custom inspector. The `Tests~` folder is excluded from Unity asset imports.
 
 ## Credits
 

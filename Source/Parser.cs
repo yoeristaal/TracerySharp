@@ -1,5 +1,4 @@
-﻿using UnityEngine.Assertions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +13,7 @@ namespace Tracery
 
 		public Parser(string rawRule)
 		{
+			if (rawRule == null) throw new ArgumentNullException("rawRule");
 			this.rawRule = rawRule;
 			this.pos = 0;
 			this.contexts = new Stack<StringBuilder>();
@@ -93,7 +93,10 @@ namespace Tracery
 			}
 
 			string[] parts = builder.ToString().Split(new char[]{':'}, 2);
-			Assert.AreEqual(parts.Length, 2); // TODO allow function actions
+			if (parts.Length != 2 || string.IsNullOrWhiteSpace(parts[0]))
+			{
+				throw new FormatException("Action must have a symbol and value separated by ':': " + builder);
+			}
 			string key = parts[0];
 			NodeAction action;
 			if (parts[1] == "POP")
@@ -158,7 +161,7 @@ namespace Tracery
 
 			// parse a sequence of zero or more preActions
 			IList<NodeAction> preActions = new List<NodeAction>();
-			while (CurrentChar() == '[')
+			while (!Eof() && CurrentChar() == '[')
 			{
 				ActionNode actionNode = ParseAction();
 				preActions.Add(actionNode.action);
@@ -203,7 +206,10 @@ namespace Tracery
 			// TODO allow modifiers to take parameters
 			string tagContent = builder.ToString();
 			string[] parts = tagContent.Split('.');
-			Assert.IsTrue(parts.Length > 0);
+			if (parts.Any(string.IsNullOrWhiteSpace))
+			{
+				throw new FormatException("Tag must have a symbol and non-empty modifier names: #" + tagContent + "#");
+			}
 			string key = parts[0];
 			string[] modifiers = parts.Skip(1).ToArray();
 			return new TagNode(key, modifiers, preActions.ToArray(), PopContext());
@@ -233,7 +239,7 @@ namespace Tracery
 		{
 			if (Eof())
 			{
-				throw new Exception("Encountered unexpected end of rule: " + rawRule);
+				throw new FormatException("Encountered unexpected end of rule: " + rawRule);
 			}
 		}
 

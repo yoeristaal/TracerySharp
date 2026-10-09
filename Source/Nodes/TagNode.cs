@@ -4,9 +4,9 @@ namespace Tracery
 {
 	public class TagNode : TraceryNode
 	{
-		private string key;
-		private string[] modifiers;
-		private NodeAction[] preActions;
+		internal readonly string key;
+		internal readonly string[] modifiers;
+		internal readonly NodeAction[] preActions;
 		private NodeAction[] postActions;
 
 		public TagNode(string key, string[] modifiers, NodeAction[] preActions, string raw) : base(raw)

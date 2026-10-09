@@ -4,8 +4,8 @@ namespace Tracery
 {
 	public class PushRulesAction : NodeAction
 	{
-		private string key;
-		private TraceryNode[] rules;
+		internal readonly string key;
+		internal readonly TraceryNode[] rules;
 
 		public PushRulesAction(string key, TraceryNode[] rules)
 		{
