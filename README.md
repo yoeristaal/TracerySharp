@@ -16,6 +16,8 @@ The repository root contains the Unity package manifest (`package.json`), so no 
 
 To use a local checkout, choose **Add package from disk** and select its root `package.json`.
 
+Keep each asset's `.meta` file in version control, including metadata for folders, scripts, assembly definitions, and the package manifest. Git packages are immutable in Unity's cache, so missing metadata causes assets to be ignored. Preserve existing metadata when editing assets and move the matching `.meta` file when moving an asset.
+
 If your own scripts use an assembly definition, add `TracerySharp` to its Assembly Definition References. Scripts in Unity's default assemblies can use the package automatically.
 
 Alternatively, download the `Source` directory and place it in your project's `Assets` folder. Use only one installation method to avoid duplicate classes.
